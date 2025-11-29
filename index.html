@@ -47,10 +47,11 @@
 
 				<input type="url" name="linkedin" id="signup-linkedin" placeholder="LinkedIn Profile URL" required />
 
-				<button type="submit" id="signup-button">
-					<span class="spinner" id="loader"></span>
-					Submit
-				</button>
+        <button type="submit" id="signup-button">
+            <span class="btn-text">Submit</span>
+            <span class="spinner" id="loader"></span>
+        </button>
+
 
 				<!-- Toast / message element (kept in DOM) -->
 				<span class="message" id="signup-message" aria-live="polite" role="status"></span>
@@ -75,14 +76,22 @@
     #signup-form {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        width: 100%;
+        align-items: stretch; /* makes ALL children same width */
     }
 
-    /* Move submit button to the right on mobile */
-    #signup-button {
-        align-self: flex-end !important;
-        margin-top: 10px;
+    /* Inputs full width */
+    #signup-form input {
+        width: 100% !important;
     }
+
+    /* Button on the right but still same width logic */
+    #signup-button {
+        align-self: flex-end;
+        width: auto; /* Keep button size natural */
+        padding: 0 20px; 
+    }
+
 
     /* Message styling for clarity when not using toast */
     #signup-message {
@@ -116,6 +125,27 @@
   outline: 2px solid rgba(200,40,40,0.9);
   box-shadow: 0 0 6px rgba(200,40,40,0.25);
 }
+
+/* Glassmorphic Toast */
+.toast-glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, 0.35); /* transparent dark glass */
+    border-radius: 14px;
+    padding: 14px 18px;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    width: 90%;
+    max-width: 340px;
+    margin: 0 auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+}
+
+/* Text color based on type */
+.toast-success { color: #42ff9d !important; } /* neon green */
+.toast-error   { color: #ff5f63 !important; } /* soft red */
+
 </style>
 
 <!-- Final script: shows on-screen toast and handles duplicate-key nicely -->
@@ -150,6 +180,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // set text
     message.textContent = text;
 
+    // Reset all previous classes
+    message.className = "";
+    message.classList.add("toast-glass");
+
+    if (type === "success") message.classList.add("toast-success");
+    if (type === "error") message.classList.add("toast-error");
+
+
     // inline styles to ensure visibility
     Object.assign(message.style, {
       position: "fixed",
@@ -162,8 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
       maxWidth: "calc(100% - 40px)",
       padding: "12px 16px",
       borderRadius: "10px",
-      background: type === "success" ? "rgba(28,150,60,0.95)" : type === "error" ? "rgba(200,40,40,0.95)" : "rgba(0,0,0,0.75)",
-      color: "#fff",
       fontWeight: "600",
       textAlign: "center",
       boxShadow: "0 6px 20px rgba(0,0,0,0.45)",
@@ -244,7 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         // Success
         console.log("Success:", data);
-        showToast("Success! Your information was submitted.", "success", 5000);
+        showToast("Congratulations! You've signed up for the challenge. Please read instructions.", "success", 5000);
         form.reset();
         nameEl.focus();
       }
@@ -264,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			<footer id="footer">
 				<ul class="icons">
 					<li><a href="https://in.linkedin.com/company/digits-n-data" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
-					<li><a href="digitsndata@gmail.com" class="icon fa-envelope"><span class="label">Email</span></a></li>
+					<li><a href="mailto:digitsndata@gmail.com" class="icon fa-envelope"><span class="label">Email</span></a></li>
 				</ul>
 				<ul class="copyright">
 					<li>&copy; Digits n Data.</li>
